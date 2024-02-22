@@ -6,11 +6,10 @@ import './App.css'
 function App() {
   let [counter,setcounter] = useState(15)
   const addValue = () => {
-    if(counter===20){
-      continue
-    } else {
-    setcounter(counter+1);}
-    console.log("value added", Math.random());
+    setcounter(counter+1);
+    setcounter(counter+1);
+    setcounter(counter+1);
+    setcounter(counter+1);
   }
 const decreaseValue =()=>{
   setcounter(counter-1);   
