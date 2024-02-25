@@ -2,14 +2,16 @@ import { useState,useCallback,useEffect,useRef } from 'react'
 
 
 function App() {
-  const[length,setlength] = useState("8") 
+  const[length,setlength] = useState(8) 
   const[numberAllowed,setNumberAllowed] = useState(false);
   const[characterAllowed,setCharacterAllowed] = useState(false);
   const [password,setPassword] = useState("")
- 
+  const [isCopied, setIsCopied] = useState(false); 
+
 
     //useRef Hook
-    const passRef = useRef(null)
+    const passwordRef = useRef(null)
+
   const passwordGenerator = useCallback(()=>{
     let pass = ""
     let str = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
@@ -18,13 +20,16 @@ function App() {
     for(let i =1; i<=length;i++){
       let randomIndex = Math.floor(Math.random()*str.length+1)
       pass += str.charAt(randomIndex)
-      setPassword(pass)
+      setPassword(pass);
     }
   },[length,numberAllowed,characterAllowed,setPassword])
 
   const copyPasswordToClipboard = useCallback(()=>{
-    passRef.current?.select();
+    passwordRef.current?.select();
+    passwordRef.current?.setSelectionRange(0, 999);
     window.navigator.clipboard.writeText(password)
+    setIsCopied(true); 
+    setTimeout(() => setIsCopied(false), 1000);
   },[password])
 
   useEffect(()=>{
@@ -44,10 +49,15 @@ function App() {
       value={password}
       className='outline-none w-full py-1 px-3'
       placeholder='Password'
+      readOnly
+      ref={passwordRef}
        />
 
-      <button className='px-3 py-0.5 bg-blue-700 text-white shrink-0 outline-none'
+      <button className={`px-3 py-0.5 bg-blue-700 text-white shrink-0 outline-none ${
+            isCopied ? "bg-red-500 text-white" : ""
+          }`}
       onClick={copyPasswordToClipboard}
+      
       >Copy</button> 
 
     </div>
@@ -58,10 +68,9 @@ function App() {
         <input type="range" 
         min={6}
         max={30}
+        value={length}
         className='cursor-pointer'
         onChange={(e)=>{setlength(e.target.value)}}
-        readOnly
-        ref = {passRef}
         />
 
         <label>Length: {length}</label>
@@ -94,4 +103,5 @@ function App() {
    </div>
   )
 }
+
 export default App
